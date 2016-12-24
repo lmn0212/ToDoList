@@ -1,27 +1,36 @@
 /**
  * Created by User on 18.12.2016.
  */
-var HTMLWebpackPlugin = require("html-webpack-plugin");
-var HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
-    template: __dirname + "/app/index.html",
-    filename: "index.html",
-    inject: "body"
-});
+var webpack = require('webpack');
+var path = require('path');
+
 module.exports = {
-    entry: __dirname + "/app/index.js",
+    devtool: 'inline-source-map',
+    entry: [
+        'webpack-dev-server/client?http://127.0.0.1:8080/',
+        'webpack/hot/only-dev-server',
+        './src'
+    ],
+    output: {
+        path: path.join(__dirname, 'public'),
+        filename: 'bundle.js'
+    },
+    resolve: {
+        modulesDirectories: ['node_modules', 'src'],
+        extnsions: ['', '.js']
+    },
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: "babel-loader"
+                loader: ['react-hot', 'babel?presets[]=react,presets[]=es2015']
 
             }
         ]
     },
-    output: {
-       filename: "transformed.js",
-       path: __dirname + "/build"
-    },
-    plugins: [HTMLWebpackPluginConfig]
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin()
+    ]
 };
